@@ -1,0 +1,25 @@
+.navbar {
+    background-color: #f2f2f2;
+    padding: 10px;
+}
+
+.nav-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.nav-link:hover {
+    color: #ff0000;
+}
