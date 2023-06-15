@@ -4,8 +4,8 @@
     <head>
         <style type="text/css">
             .bodyBody {
-                margin: 10px;
-                font-size: 1.50em;
+                margin: 40px;
+                font-size: 1em;
             }
             .divHeader {
                 text-align: right;
@@ -22,7 +22,9 @@
             .divSubject {
                 clear: both;
                 font-weight: bold;
-                padding-top: 80px;
+                text-align: center;
+                align-items: center;
+                padding-top: 30px;
             }
             .divAdios {
                 float: right;
@@ -39,15 +41,20 @@
         </div>
 
         <div class="divReturnAddress">
+        <br/>
+        <br/>
+
         <p> {{ $currentDate }}</p><br/>
             
         </div>
 
         <div class="divSubject">
-            Request for ganire
+            Request Form
         </div>
 
         <div class="divContents">
+            <br/>
+            <br/>
             <p>
                 Auto Generated Receiving Form.
             </p>

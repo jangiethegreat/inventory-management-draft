@@ -11,6 +11,10 @@
                         @if(isset($errorMessage))
                             <div class="alert alert-danger">{{ $errorMessage }}</div>
                         @endif
+                        @if (session()->has('success'))
+        <div class="alert alert-success">
+        {{ session('success') }}
+        @endif
                         <form action="{{ route('stocks.index') }}" method="GET">
                             <div class="input-group mb-3">
                                 <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ request('search') }}">
@@ -44,6 +48,7 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
+                                
                                 <tbody>
                                     @foreach($stocks as $item)
                                         <tr>
@@ -71,8 +76,10 @@
                                                 </form>
                                             </td>
                                         </tr>
+                                        
                                     @endforeach
                                 </tbody>
+                                
                             </table>
                         </div>
                     </div>
