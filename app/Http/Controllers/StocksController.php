@@ -13,6 +13,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Yajra\DataTables\Facades\DataTables;
 
+
 use PDF;
 
 use Illuminate\Http\Request;

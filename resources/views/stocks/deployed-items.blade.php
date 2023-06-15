@@ -21,7 +21,7 @@
                     </div>
                     <div class="card-body">
                         @if($deployedItems->isEmpty())
-                            <div class="alert alert-danger">No deployed items found.</div>
+                            <div class="alert alert-danger">No Records found.</div>
                         @else
                             <div class="table-responsive">
                                 <table class="table">

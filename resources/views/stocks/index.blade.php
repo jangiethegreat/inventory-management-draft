@@ -8,10 +8,10 @@
                 <div class="card">
                     <div class="card-header">Stocks</div>
                     <div class="card-body">
-                        @if(isset($errorMessage))
+                       @if(isset($errorMessage))
                             <div class="alert alert-danger">{{ $errorMessage }}</div>
                         @endif
-                        @if (session()->has('success'))
+                        @if(session()->has('success'))
         <div class="alert alert-success">
         {{ session('success') }}
         @endif
@@ -81,6 +81,7 @@
                                 </tbody>
                                 
                             </table>
+                            
                         </div>
                     </div>
                 </div>
