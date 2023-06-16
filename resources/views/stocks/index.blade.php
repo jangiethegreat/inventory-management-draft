@@ -26,16 +26,7 @@
                         <a href="{{ url('/stocks/create') }}" class="btn btn-success btn-sm" title="Add New Stocks">
                             <i class="fa fa-plus" aria-hidden="true"></i> Add New
                         </a>
-                        <a href="{{ url('/cart') }}" title="View Cart">
-                            <button class="btn btn-info btn-sm">
-                                <i class="fa fa-eye" aria-hidden="true"></i> View Cart
-                            </button>
-                        </a>
-                        <a href="{{ url('/deployed-items') }}" title="View Deployed Items">
-                            <button class="btn btn-info btn-sm">
-                                <i class="fa fa-eye" aria-hidden="true"></i> View Deployed Items
-                            </button>
-                        </a>
+                        
                         <br/><br/>
                         <div class="table-responsive">
                             <table class="table">
@@ -79,7 +70,7 @@
                                         
                                     @endforeach
                                 </tbody>
-                                
+                               
                             </table>
                             
                         </div>

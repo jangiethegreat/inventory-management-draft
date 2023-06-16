@@ -1,0 +1,30 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination > li {
+    margin: 0 2px;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+    padding: 8px 12px;
+    background-color: #f0f0f0;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.pagination > .active > a,
+.pagination > .active > span {
+    background-color: #333;
+    color: #fff;
+}
+
+.pagination > .disabled > span {
+    background-color: #f0f0f0;
+    color: #999;
+}

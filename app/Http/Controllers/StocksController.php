@@ -14,6 +14,7 @@ use Dompdf\Options;
 use Yajra\DataTables\Facades\DataTables;
 
 
+
 use PDF;
 
 use Illuminate\Http\Request;
@@ -70,7 +71,7 @@ class StocksController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified resource.    
      */
     public function edit(string $id)
     {
@@ -146,33 +147,65 @@ class StocksController extends Controller
             return redirect()->back()->with('error', 'Insufficient stock quantity!');
         }
 
-        // Create a new cart item
-        $cartItem = new CartItem();
-        $cartItem->stock_id = $stock->id;
-        $cartItem->quantity = 1; // Assuming the default quantity is 1
-        $cartItem->save();
+        // Find the existing cart item with the same stock ID
+        $cartItem = CartItem::where('stock_id', $stock->id)->first();
+
+        if ($cartItem) {
+            // Increment the quantity of the existing cart item
+            $cartItem->quantity += 1;
+            $cartItem->save();
+        } else {
+            // Create a new cart item
+            $cartItem = new CartItem();
+            $cartItem->stock_id = $stock->id;
+            $cartItem->quantity = 1; // Assuming the default quantity is 1
+            $cartItem->save();
+        }
 
         // Update the stocks quantity
-        $stock->quantity -= $cartItem->quantity;
+        $stock->quantity -= 1;
         $stock->save();
 
         return redirect()->route('stocks.index')->with('success', 'Item added to cart successfully!');
-
     }
+
     public function removeFromCart(string $id)
     {
         $cartItem = CartItem::findOrFail($id);
+
+        $stock = Stocks::find($cartItem->stock_id);
+
+        if ($stock) {
+            // Add the cart item quantity back to the stock
+            $stock->quantity += $cartItem->quantity;
+            $stock->save();
+        }
+
         $cartItem->delete();
 
         return redirect()->route('cart.view')->with('success', 'Item removed from cart successfully!');
     }
 
+
     public function clearCart()
     {
+        $cartItems = CartItem::all();
+
+        foreach ($cartItems as $cartItem) {
+            $stock = Stocks::find($cartItem->stock_id);
+
+            if ($stock) {
+                // Add the cart item quantity back to the stock
+                $stock->quantity += $cartItem->quantity;
+                $stock->save();
+            }
+        }
+
         CartItem::truncate();
 
         return redirect()->route('cart.view')->with('success', 'Cart cleared successfully!');
     }
+
 
     public function checkout()
     {
@@ -309,15 +342,15 @@ class StocksController extends Controller
 
 
         if ($deployedItem->receiver_name == 'Annap 2') {
-            $path = public_path() . '/logo.jpg';
+            $path = public_path() . '/logo3.png';
             $data = file_get_contents($path);
         }
 
         $image = 'data:image/' . $type . ';base64,' . base64_encode($data);
-        $currentDate = Carbon::now()->toDateString();
-        $currentTime = Carbon::now()->format('H-i-s');
+        $currentDate = Carbon::now()->format('Y/m/d');
 
-        $fileName = 'Request-form-' . $currentDate . '-' . $currentTime . '.pdf'; // Customize the file name here
+
+        $fileName = $deployedItem->receiver_name . '-Request-form-' . $currentDate . '.pdf'; // Customize the file name here
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::setOptions(['isHTML5ParserEnabled' => true, 'isRemoteEnabled' => true])
             ->loadview('pdf.deployed-item', compact('deployedItem', 'currentDate', 'image'));
