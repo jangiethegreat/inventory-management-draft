@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="card">
-  <div class="card-header">stocksus Page</div>
+  <div class="card-header">Edit Stocks</div>
   <div class="card-body">
     <form action="{{ url('stocks/' . $stocks->id) }}" method="post">
         {!! csrf_field() !!}

@@ -3,14 +3,14 @@
 @include('navbar')
 
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-9">
+    <div class="container custom-container">
+        <div class="row justify-content-center">
+            <div class="col-md-9 glow-table">
                 <div class="card">
                     <div class="card-header">Cart</div>
                     <div class="card-body">
                         @if (count($cartItems) > 0)
-                            <table class="table">
+                            <table class="table table-striped table-hover">
                                 <thead>
                                     <tr>
                                         <th>ID</th>

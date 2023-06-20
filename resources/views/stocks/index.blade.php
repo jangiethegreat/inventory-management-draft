@@ -1,10 +1,12 @@
 @extends('stocks.layout')
 @include('navbar')
 
+
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-9">
+
+    <div class="container custom-container ">
+        <div class="row justify-content-center">
+            <div class="col-md-9 glow-table">
                 <div class="card">
                     <div class="card-header">Stocks</div>
                     <div class="card-body">
@@ -12,10 +14,14 @@
                             <div class="alert alert-danger">{{ $errorMessage }}</div>
                         @endif
                         @if(session()->has('success'))
-        <div class="alert alert-success">
-        {{ session('success') }}
-        @endif
+                            <div class="alert alert-success">
+                        {{ session('success') }}
+                        @endif
                         <form action="{{ route('stocks.index') }}" method="GET">
+
+                        <a href="{{ url('/stocks/create') }}" class="btn btn-success btn-sm add-new-button" title="Add New Stocks">
+                            <i class="fa fa-plus" aria-hidden="true"></i> Add New
+                        </a>
                             <div class="input-group mb-3">
                                 <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ request('search') }}">
                                 <div class="input-group-append">
@@ -23,13 +29,11 @@
                                 </div>
                             </div>
                         </form>
-                        <a href="{{ url('/stocks/create') }}" class="btn btn-success btn-sm" title="Add New Stocks">
-                            <i class="fa fa-plus" aria-hidden="true"></i> Add New
-                        </a>
-                        
+                      
+                        </div>
                         <br/><br/>
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table table-striped table-hover">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -80,3 +84,4 @@
         </div>
     </div>
 @endsection
+
