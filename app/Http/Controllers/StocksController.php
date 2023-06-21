@@ -27,12 +27,21 @@ class StocksController extends Controller
      */
     public function index(Request $request)
     {
+
         $search = $request->input('search');
 
-        $stocks = Stocks::where(function ($query) use ($search) {
-            $query->where('name', 'like', "%$search%")
-                ->orWhere('description', 'like', "%$search%");
-        })->get();
+        $query = Stocks::query();
+
+        if (!empty($search)) {
+            $query->where(function ($innerQuery) use ($search) {
+                $innerQuery->where('name', 'like', "%$search%")
+                    ->orWhere('description', 'like', "%$search%");
+            });
+        }
+
+        $stocks = $query->get();
+
+        $originalIds = Stocks::pluck('id');
 
         if ($stocks->isEmpty()) {
             $errorMessage = 'No stocks found.';
@@ -40,7 +49,7 @@ class StocksController extends Controller
             $errorMessage = null;
         }
 
-        return view('stocks.index', compact('stocks', 'errorMessage'));
+        return view('stocks.index', compact('stocks', 'errorMessage', 'originalIds'));
     }
 
     /**

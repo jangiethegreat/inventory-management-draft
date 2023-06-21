@@ -193,7 +193,7 @@ display: block;
           
         </div>
         <div class="footer-bottom">
-            <p>copyright &copy; <a href="#">Annapolis IT Developer Team</a>  </p>
+            <p>copyright &copy; <a href="https://github.com/jangiethegreat">Annapolis IT Developer Team</a>  </p>
                     
         </div>
 
