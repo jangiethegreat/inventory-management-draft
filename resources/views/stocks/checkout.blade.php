@@ -18,7 +18,7 @@
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="sender_name">Sender's Name</label>
+                                <label for="sender_name">Deployed By</label>
                                 <input type="text" class="form-control" id="sender_name" name="sender_name" value="{{ old('sender_name') }}" required>
                                 @error('sender_name')
                                     <span class="text-danger">{{ $message }}</span>

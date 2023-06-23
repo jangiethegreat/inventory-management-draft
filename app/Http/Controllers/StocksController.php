@@ -27,7 +27,6 @@ class StocksController extends Controller
      */
     public function index(Request $request)
     {
-
         $search = $request->input('search');
 
         $query = Stocks::query();
@@ -49,7 +48,10 @@ class StocksController extends Controller
             $errorMessage = null;
         }
 
-        return view('stocks.index', compact('stocks', 'errorMessage', 'originalIds'));
+        // Get the cart count
+        $cartCount = CartItem::sum('quantity');
+
+        return view('stocks.index', compact('stocks', 'errorMessage', 'originalIds', 'cartCount'));
     }
 
     /**
@@ -70,40 +72,34 @@ class StocksController extends Controller
         return redirect('stocks')->with('flash_message', 'Stocks Addedd!');
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
         $stocks = Stocks::find($id);
         return view('stocks.show')->with('stocks', $stocks);
     }
 
-    /**
-     * Show the form for editing the specified resource.    
-     */
+
     public function edit(string $id)
     {
         $stocks = Stocks::find($id);
         return view('stocks.edit')->with('stocks', $stocks);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request, string $id)
     {
         $stocks = Stocks::find($id);
 
         $rules = [
             'quantity' => 'required|numeric',
-            // other validation rules for the description field, if any
+
         ];
 
         $messages = [
             'quantity.required' => 'The quantity field is required.',
             'quantity.numeric' => 'The quantity field must be a number.',
-            // error messages for other validation rules, if any
+
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -112,16 +108,16 @@ class StocksController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Validate the stock data
+
         if (!$stocks) {
             return redirect()->back()->with('error', 'Stock not found!');
         }
 
-        // Calculate the new quantity
+
         $existingQuantity = $stocks->quantity;
         $newQuantity = $existingQuantity + $request->input('quantity', 0);
 
-        // Update the stock information
+
         $stocks->quantity = $newQuantity;
         $stocks->description = $request->input('description');
         $stocks->save();
@@ -146,38 +142,35 @@ class StocksController extends Controller
     {
         $stock = Stocks::find($id);
 
-        // Validate the stock data
         if (!$stock) {
             return redirect()->back()->with('error', 'Stock not found!');
         }
 
-        // Check if there is sufficient quantity available
         if ($stock->quantity <= 0) {
             return redirect()->back()->with('error', 'Insufficient stock quantity!');
         }
 
-        // Find the existing cart item with the same stock ID
         $cartItem = CartItem::where('stock_id', $stock->id)->first();
 
         if ($cartItem) {
-            // Increment the quantity of the existing cart item
             $cartItem->quantity += 1;
             $cartItem->save();
         } else {
-            // Create a new cart item
             $cartItem = new CartItem();
             $cartItem->stock_id = $stock->id;
-            $cartItem->quantity = 1; // Assuming the default quantity is 1
+            $cartItem->quantity = 1;
             $cartItem->save();
         }
 
-        // Update the stocks quantity
         $stock->quantity -= 1;
         $stock->save();
 
-        return redirect()->route('stocks.index')->with('success', 'Item added to cart successfully!');
-    }
+        // Update the cart count
+        $cartCount = CartItem::sum('quantity');
 
+        return redirect()->route('stocks.index')->with('success', 'Item added to cart successfully!')
+            ->with('cartCount', $cartCount);
+    }
     public function removeFromCart(string $id)
     {
         $cartItem = CartItem::findOrFail($id);
@@ -185,7 +178,6 @@ class StocksController extends Controller
         $stock = Stocks::find($cartItem->stock_id);
 
         if ($stock) {
-            // Add the cart item quantity back to the stock
             $stock->quantity += $cartItem->quantity;
             $stock->save();
         }
@@ -204,7 +196,6 @@ class StocksController extends Controller
             $stock = Stocks::find($cartItem->stock_id);
 
             if ($stock) {
-                // Add the cart item quantity back to the stock
                 $stock->quantity += $cartItem->quantity;
                 $stock->save();
             }
@@ -239,15 +230,15 @@ class StocksController extends Controller
         $receiverName = $request->input('receiver_name');
         $senderName = $request->input('sender_name');
         $itemDetails = $request->input('item_details');
+        $currentDate = Carbon::now(); // Get the current date and time
 
-        // Store the deployed items in the deployed_items table
         DeployedItem::create([
             'receiver_name' => $receiverName,
             'sender_name' => $senderName,
             'item_details' => $itemDetails,
+            'created_at' => $currentDate,
         ]);
 
-        // Clear the cart
         CartItem::truncate();
 
         return redirect()->route('stocks.index')->with('success', 'Items deployed successfully!');
@@ -366,6 +357,106 @@ class StocksController extends Controller
 
         return $pdf->download($fileName);
 
+    }
+    public function downloadReports()
+    {
+        // Get today's date
+        $today = Carbon::today();
+
+        // Retrieve deployed items added today
+        $deployedItems = DeployedItem::whereDate('created_at', $today)->get();
+
+        // Set the default image path and type
+        $defaultImagePath = public_path() . '/annaplogo.jpg';
+        $defaultImageType = pathinfo($defaultImagePath, PATHINFO_EXTENSION);
+        $defaultImageData = file_get_contents($defaultImagePath);
+
+        // Generate the HTML table for the report
+        $html = '
+    <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                }
+                h1 {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                th, td {
+                    padding: 10px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                }
+                th {
+                    background-color: #f5f5f5;
+                }
+                .logo-container {
+                    text-align: center;
+                    align-items: center;
+                    margin-bottom: 20px;
+                }
+                .logo-container img {
+                    width: 450px;
+                    height: 120px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="logo-container">
+                <img src="' . 'data:image/' . $defaultImageType . ';base64,' . base64_encode($defaultImageData) . '" alt="image">
+            </div>
+            <h1>Deployed Items Report ' . $today->format('Y-m-d') . '</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Receiver Name</th>
+                        <th>Deployed By</th>
+                        <th>Item Details</th>
+                    </tr>
+                </thead>
+                <tbody>';
+
+        foreach ($deployedItems as $item) {
+            $html .= '
+        <tr>
+            <td>' . $item->receiver_name . '</td>
+            <td>' . $item->sender_name . '</td>
+            <td>' . $item->item_details . '</td>
+        </tr>';
+        }
+
+        $html .= '
+                </tbody>
+            </table>
+        </body>
+    </html>';
+
+        // Configure PDF options
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+
+        // Create a new DOMPDF instance
+        $dompdf = new Dompdf($options);
+
+        // Load the HTML into DOMPDF
+        $dompdf->loadHtml($html);
+
+        // Set paper size and orientation
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Generate the PDF file name
+        $fileName = 'deployed_items_report_' . $today->format('Y-m-d') . '.pdf';
+
+        // Download the PDF file
+        $dompdf->stream($fileName, ['Attachment' => true]);
     }
 
 

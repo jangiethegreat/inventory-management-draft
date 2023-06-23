@@ -18,7 +18,14 @@
                         @endif
                         <form action="{{ route('stocks.index') }}" method="GET">
                             <a href="{{ url('/stocks/create') }}" class="btn btn-success btn-sm add-new-button" title="Add New Stocks">
-                                <i class="fa fa-plus" aria-hidden="true"></i> Add New
+                                <i class="fa fa-plus" aria-hidden="true"></i> Add New Stocks
+                            </a>
+
+                            <a href="{{ url('/cart') }}">
+                                    <div class="cart-icon">
+                                            <i class="fa fa-shopping-basket"></i>
+                                                        <span class="cart-count">{{ $cartCount }}</span>
+                                    </div>
                             </a>
                             <div class="input-group mb-3">
                                 <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ request('search') }}">

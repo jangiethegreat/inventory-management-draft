@@ -9,6 +9,6 @@ class DeployedItem extends Model
 {
     use HasFactory;
     protected $table = 'deployed_items';
-    protected $fillable = ['receiver_name', 'sender_name', 'item_details'];
+    protected $fillable = ['receiver_name', 'sender_name', 'item_details', 'created_at'];
     public $timestamps = false;
 }

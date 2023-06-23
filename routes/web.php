@@ -21,3 +21,4 @@ Route::get('/checkout', [StocksController::class, 'checkout'])->name('checkout')
 Route::post('/deploy-items', [StocksController::class, 'deployItems'])->name('deployItems');
 Route::get('/deployed-items', [StocksController::class, 'showDeployedItems'])->name('deployedItems.index');
 Route::get('/deployed-items/{id}/download-pdf', [StocksController::class, 'downloadPdf'])->name('deployedItems.downloadPdf');
+Route::get('/download-reports', [StocksController::class, 'downloadReports'])->name('download-reports');

@@ -4,11 +4,16 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
+        
             <div class="col-md-9 glow-table">
+            
                 <div class="card">
+                    
                     <div class="card-header">
                         Deployed Items
                         <div class="float-right">
+                        <a href="{{ url('download-reports') }}" class="btn btn-primary add-new-button"><i class="fa fa-download" aria-hidden="true"></i> Download Reports for Today</a>
+                            
                             <form action="{{ route('deployedItems.index') }}" method="GET">
                                 <div class="input-group">
                                     <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ request('search') }}">
@@ -29,7 +34,7 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Receiver's Name</th>
-                                            <th>Sender's Name</th>
+                                            <th>Deployed By</th>
                                             <th>Item Details</th>
                                             <th>Action</th>
                                         </tr>
