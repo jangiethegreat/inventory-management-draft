@@ -273,7 +273,6 @@ class StocksController extends Controller
         }
 
         return view('stocks.deployed-items', compact('deployedItems', 'lastId', 'errorMessage'));
-
     }
 
 
@@ -356,7 +355,6 @@ class StocksController extends Controller
             ->loadview('pdf.deployed-item', compact('deployedItem', 'currentDate', 'image'));
 
         return $pdf->download($fileName);
-
     }
     public function downloadReports()
     {
@@ -459,7 +457,8 @@ class StocksController extends Controller
         $dompdf->stream($fileName, ['Attachment' => true]);
     }
 
-
-
-
+    public function table()
+    {
+        return view('stocks.table');
+    }
 }

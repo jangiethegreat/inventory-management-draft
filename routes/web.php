@@ -22,3 +22,4 @@ Route::post('/deploy-items', [StocksController::class, 'deployItems'])->name('de
 Route::get('/deployed-items', [StocksController::class, 'showDeployedItems'])->name('deployedItems.index');
 Route::get('/deployed-items/{id}/download-pdf', [StocksController::class, 'downloadPdf'])->name('deployedItems.downloadPdf');
 Route::get('/download-reports', [StocksController::class, 'downloadReports'])->name('download-reports');
+Route::get('/table', [App\Http\Controllers\StocksController::class, 'table'])->name('table');
